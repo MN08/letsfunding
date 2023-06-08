@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"letsfunding/helper"
 	"letsfunding/user"
 	"net/http"
@@ -111,6 +112,42 @@ func (h *userHandler) CheckEmailAvailabilty(c *gin.Context) {
 	}
 
 	response := helper.APIResponse(metaMessage, http.StatusOK, "Success", data)
+	c.JSON(http.StatusOK, response)
+
+}
+
+func (h *userHandler) UploadAvatar(c *gin.Context) {
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		data := gin.H{"isUploaded": false}
+		response := helper.APIResponse("Upload Avatar Failed", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	userID := 7
+	imagePath := fmt.Sprintf("images/%d-%s", userID, file.Filename)
+	err = c.SaveUploadedFile(file, imagePath)
+	if err != nil {
+		data := gin.H{"isUploaded": false}
+		response := helper.APIResponse("Upload Avatar Failed", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = h.userService.SaveAvatar(userID, imagePath)
+	if err != nil {
+		data := gin.H{"isUploaded": false}
+		response := helper.APIResponse("Upload Avatar Failed", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	data := gin.H{"isUploaded": true}
+	response := helper.APIResponse("Upload Avatar Succeed", http.StatusOK, "success", data)
+
 	c.JSON(http.StatusOK, response)
 
 }
