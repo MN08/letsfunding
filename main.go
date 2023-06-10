@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"letsfunding/auth"
+	"letsfunding/campaign"
 	"letsfunding/handler"
 	"letsfunding/helper"
 	"letsfunding/user"
@@ -27,8 +28,20 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
-	userService := user.NewService(userRepository)
+	campaignRepository := campaign.NewRepository(db)
 
+	// campaigns, err := campaignRepository.FindAll()
+	campaigns, err := campaignRepository.FindByUserID(7)
+	fmt.Println("debug")
+	fmt.Println("debug")
+	fmt.Println("debug")
+	fmt.Println(len(campaigns))
+
+	for _, campaign := range campaigns {
+		fmt.Println(campaign.Name)
+	}
+
+	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
