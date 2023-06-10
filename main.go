@@ -30,29 +30,24 @@ func main() {
 	userRepository := user.NewRepository(db)
 	campaignRepository := campaign.NewRepository(db)
 
-	// campaigns, err := campaignRepository.FindAll()
-	campaigns, err := campaignRepository.FindByUserID(7)
-	fmt.Println("debug")
-	fmt.Println("debug")
-	fmt.Println("debug")
-	fmt.Println(len(campaigns))
-
-	for _, campaign := range campaigns {
-		fmt.Println(campaign.Name)
-	}
-
 	userService := user.NewService(userRepository)
+	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler((campaignService))
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
+	//user
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/isemailavailables", userHandler.CheckEmailAvailabilty)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+
+	//campaign
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
 
 	router.Run()
 
