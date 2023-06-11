@@ -3,6 +3,7 @@ package handler
 import (
 	"letsfunding/campaign"
 	"letsfunding/helper"
+	"letsfunding/user"
 	"net/http"
 	"strconv"
 
@@ -47,5 +48,33 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 		return
 	}
 	response := helper.APIResponse("Campaign Detail", http.StatusOK, "Success", campaign.FormatDetailCampaign(campaignDetail))
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *campaignHandler) CreateCampaign(c *gin.Context) {
+	var input campaign.CreateCampaignInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse("Create Campaign Failed", http.StatusUnprocessableEntity, "Error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	input.User = currentUser
+
+	newCampaign, err := h.service.CreateCampaign(input)
+	if err != nil {
+		response := helper.APIResponse("Create Campaign Failed", http.StatusBadRequest, "Error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Create Campaign Success", http.StatusOK, "Success", campaign.FormatCampaign(newCampaign))
 	c.JSON(http.StatusOK, response)
 }
