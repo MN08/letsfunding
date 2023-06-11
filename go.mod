@@ -10,6 +10,11 @@ require (
 require github.com/golang-jwt/jwt/v5 v5.0.0
 
 require (
+	github.com/gosimple/slug v1.13.1
+	github.com/gosimple/unidecode v1.0.1 // indirect
+)
+
+require (
 	github.com/bytedance/sonic v1.9.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
