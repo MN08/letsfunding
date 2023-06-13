@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"letsfunding/campaign"
 	"letsfunding/user"
 	"time"
 )
@@ -16,5 +17,6 @@ type (
 		CreatedAt  time.Time
 		UpdatedAt  time.Time
 		User       user.User
+		Campaign   campaign.Campaign
 	}
 )
