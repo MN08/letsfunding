@@ -1,6 +1,9 @@
 package transaction
 
-import "time"
+import (
+	"letsfunding/user"
+	"time"
+)
 
 type (
 	Transaction struct {
@@ -12,5 +15,6 @@ type (
 		Code       string
 		CreatedAt  time.Time
 		UpdatedAt  time.Time
+		User       user.User
 	}
 )
